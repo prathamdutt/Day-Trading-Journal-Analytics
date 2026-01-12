@@ -1,0 +1,74 @@
+from datetime import datetime
+import uuid
+
+
+class Trade:
+    def __init__(self, name ,buy_or_sell, open_price):
+        now = datetime.now()
+        self.open_time = now.time()
+        self.close_time = None
+        self.date = now.date()
+        self.buy_or_sell = buy_or_sell
+        self.name = str(name)
+        self.open_price = float(open_price)
+        self.close_price = 0
+        self.profit_loss = 0
+        self.id = uuid.uuid4().hex
+        
+    def P_L(self):
+        if self.buy_or_sell in "Bb":
+            self.profit_loss = self.close_price - self.open_price
+            return self.profit_loss
+        if self.buy_or_sell in "Ss":
+            self.profit_loss = self.open_price - self.close_price
+            
+            return self.profit_loss
+        
+    def close(self, price):
+        self.close_price = price
+        self.close_time = datetime.now().time()
+        print("profit/loss = ", self.P_L())
+trades = {}   
+open_trades = {}
+running = True 
+
+
+def close_trade(price, key):
+    if open_trades.get(key) == None:
+        raise ValueError("there are no trades open of this company")
+    open_trades[key].close(price)
+    del open_trades[key]
+
+def open_trade(name, price, b_s):
+    if name in open_trades:
+        raise ValueError("Trade already open")
+    trade =  Trade(name=name, buy_or_sell= b_s, open_price= price)
+    trades[trade.id] =  trade
+    open_trades[name] = trade 
+    
+
+while(running):
+    listen = str(input("what do you wanna do : "))
+    if listen.lower() == "o":
+        name = input("enter the name of the trade : ")
+        price = float(input("enter the price of the trade : "))
+        by_sel = input("b or s : ")
+        open_trade(name= name, price= price, b_s= by_sel.lower())
+    if listen.lower() == "c":
+        print("choose the following trades : ")
+        for i in open_trades.keys():
+            print(i)
+        key = input("")
+        price = float(input("enter the price of the trade : "))
+        close_trade(price=price, key=key)
+
+    if listen.lower() == "n":
+        tot_profit  = 0
+        for i in trades.keys():
+            trade = trades[i]
+            print(f"name = {trade.name}, open_price = {str(trade.open_price)}, close_price = {str(trade.close_price)}, profit = {str(trade.profit_loss)}, b or s = {trade.buy_or_sell}, time = {trade.close_time}")
+            tot_profit += trade.profit_loss
+        print(f"total profit = {str(tot_profit)}")
+        running = False
+
+
