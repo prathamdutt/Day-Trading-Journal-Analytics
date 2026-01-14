@@ -64,11 +64,18 @@ while(running):
 
     if listen.lower() == "n":
         tot_profit  = 0
-        for i in trades.keys():
-            trade = trades[i]
-            print(f"name = {trade.name}, open_price = {str(trade.open_price)}, close_price = {str(trade.close_price)}, profit = {str(trade.profit_loss)}, b or s = {trade.buy_or_sell}, time = {trade.close_time}")
-            tot_profit += trade.profit_loss
-        print(f"total profit = {str(tot_profit)}")
+        with open("logs.txt", "a") as f:
+            f.write(f"\n \ndate = {str(datetime.now().date())}\n")
+            for i in trades.keys():
+                trade = trades[i]
+                data = f"--name = {trade.name}, open_price = {str(trade.open_price)}, close_price = {str(trade.close_price)}, profit = {str(trade.profit_loss)}, b or s = {trade.buy_or_sell}, time = {trade.close_time}\n"
+                f.write(data)
+                tot_profit += trade.profit_loss
+            f.write(f"\ntotal profit/loss for today = {str(tot_profit)}")
+                
+            #print(f"name = {trade.name}, open_price = {str(trade.open_price)}, close_price = {str(trade.close_price)}, profit = {str(trade.profit_loss)}, b or s = {trade.buy_or_sell}, time = {trade.close_time}")
+            
+        #print(f"total profit = {str(tot_profit)}")
         running = False
 
 
