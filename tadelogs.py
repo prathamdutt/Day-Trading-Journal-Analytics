@@ -62,9 +62,16 @@ while(running):
         price = float(input("enter the price of the trade : "))
         close_trade(price=price, key=key)
 
+    if listen.lower() == "v":
+        print(f"here are all open trades currently : ")
+        for n,t in open_trades.items():
+            now = datetime.now()
+            elapse_time = now - datetime.combine(now.date(), t.open_time)
+            print(f" name = {n}, open price = {t.open_price}, time elapsed = {elapse_time.time()} HH:MM:SS")
+
     if listen.lower() == "n":
         tot_profit  = 0
-        with open("logs.txt", "a") as f:
+        with open(f"logs_{str(datetime.now().date())}.txt", "a") as f:
             f.write(f"\n \ndate = {str(datetime.now().date())}\n")
             for i in trades.keys():
                 trade = trades[i]
