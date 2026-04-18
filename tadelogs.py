@@ -54,66 +54,29 @@ def open_trade(name, price, b_s):
     print("trade has been set.")
 
             
-#def close_trade_value_handler():
-#    data1 = openT(root)
-#
-#    if data1 is not None:
-#            print(data1)
-#            name = data1["name"]
-#            price = data1["price"]
-#            by_sel = data1["buy/sell"]
-#            close_trade(name= name, price= price, b_s= by_sel.lower())
-#            print("trade has been set")
 
+btn_frame = LabelFrame(root, border=2, relief= "groove", text= "nav: ")
+btn_frame.grid(row= 0, column= 0)
+Button(btn_frame, text="Open Trade", command=lambda r = root : openT(r,open_trade)).pack()
+Button(btn_frame, text="Close Trade", command=lambda r = root : closeT(r, close_trade, open_trades)).pack()
+Button(btn_frame, text="View Trade", command=lambda r = root : view(r, open_trades)).pack()
+Button(btn_frame, text = "End Day!", command=lambda r = root : end(r, trades)).pack()
 
+#nalytics
+analytic_frame = LabelFrame(root, border= 2, relief= "groove", text="anlaytics dash board (not operable)")
+analytic_frame.grid(row= 20, column= 0, sticky = "W")
 
-#if btn == "o":
-#    print("this condition is triggered")
-#    data1 = openT(root)
-#    if data1 is not None:
-#        name = data1["name"]
-#        price = data1["price"]
-#        by_sel = data1["buy/sell"]
-        
-#name = input("enter the name of the trade : ")
-#price = float(input("enter the price of the trade : "))
-#by_sel = input("b or s : ")
-#    open_trade(name= name, price= price, b_s= by_sel.lower())
-#    print("trade has been set")
-#if btn == "c":
-#    print("choose the following trades : ")
-#    for i in open_trades.keys():
-#        print(i)
-#    key = input("")
-#    price = float(input("enter the price of the trade : "))
-#    close_trade(price=price, key=key)
-#
-#if btn == "v":
-#    print(f"here are all open trades currently : ")
-#    for n,t in open_trades.items():
-#        now = datetime.now()
-#        elapse_time = now - datetime.combine(now.date(), t.open_time)
-#        print(f" name = {n}, open price = {t.open_price}, time elapsed = {elapse_time.time()} HH:MM:SS")
-#
-#if btn == "e":
-#    tot_profit  = 0
-#    with open(f"logs_{str(datetime.now().date())}.txt", "a") as f:
-#        f.write(f"\n \ndate = {str(datetime.now().date())}\n")
-#        for i in trades.keys():
-#            trade = trades[i]
-#            data = f"--name = {trade.name}, open_price = {str(trade.open_price)}, close_price = {str(trade.close_price)}, profit = {str(trade.profit_loss)}, b or s = {trade.buy_or_sell}, time = {trade.close_time}\n"
-#            f.write(data)
-#            tot_profit += trade.profit_loss
-#        f.write(f"\ntotal profit/loss for today = {str(tot_profit)}")
-                
-            #print(f"name = {trade.name}, open_price = {str(trade.open_price)}, close_price = {str(trade.close_price)}, profit = {str(trade.profit_loss)}, b or s = {trade.buy_or_sell}, time = {trade.close_time}")
-            
-        #print(f"total profit = {str(tot_profit)}")
-btn_frame = LabelFrame(root, text= "nav:", border=2, relief= "groove").grid(row= 0, column= 0, rowspan=10)
-Button(btn_frame, text="Open Trade", command=lambda r = root : openT(r,open_trade)).grid(row=0, column=0)
-Button(btn_frame, text="Close Trade", command=lambda r = root : closeT(r, close_trade, open_trades)).grid(row=3, column=0)
-Button(btn_frame, text="View Trade", command=lambda r = root : view(r, open_trades)).grid(row=5, column=0)
-Button(btn_frame, text = "End Day!", command=lambda r = root : end(r, trades)).grid(row= 10, column= 0)
+#labels NOT OPERABLE (FOR LATER UPGRADE)
+win_rate_label = Label(analytic_frame, text = "win rate = 0%")
+PnL_label = Label(analytic_frame, text = " total P/L = 0")
+avg_win = Label(analytic_frame, text = "avg wins = 0")
+avg_loss = Label(analytic_frame, text = "avg losses = 0")
+tot_trades = Label(analytic_frame, text = f"tot. Trades = {len(trades)}")
+win_rate_label.pack()
+PnL_label.pack()
+avg_win.pack()
+avg_loss.pack()
+tot_trades.pack()
 
 root.mainloop()
 
