@@ -1,9 +1,14 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
+from tkinter import messagebox
 from datetime import datetime
+import sys
 import os
 import csv
 import json 
+
+
 
 def openT(root, open_trade):
     
@@ -28,7 +33,6 @@ def openT(root, open_trade):
         for  i,j in entries.items():
             vals[i] = j.get()
         form_frame.destroy()
-        btn = None
         open_trade(name = vals["name"], price = vals["price"], b_s = vals["buy/sell"])
     #cancel logic
     def cancel():
@@ -91,6 +95,8 @@ def view(root, open_trades):
         elapse_time = now - datetime.combine(now.date(), t.open_time)
         Label(form_frame, text=f" name = {n}, open price = {t.open_price}, time elapsed = {elapse_time} HH:MM:SS").pack(padx= 10, pady=1)
 
+
+
 def end(root, trades):
     tot_profit  = 0
     choice_path = None
@@ -100,15 +106,45 @@ def end(root, trades):
     form_frame = Frame(root, border= 2, relief= "groove")
     form_frame.grid(row= 30, column= 1)
     #path update
-    Label(form_frame, text="enter the path of file(optional):-").pack(padx=10, pady=5)
+    Label(form_frame, text=" please choose or enter the path of file:-").pack(padx=10, pady=5)
     e1 = Entry(form_frame)
     e1.pack(padx=10, pady=5)
+
+    #browse file system
+    save_dir = StringVar(value="")
+
+    def browse():
+        save_dir.set(filedialog.askdirectory())
+        print("save directory : ", save_dir.get())
+        
+    browse = ttk.Button(form_frame, text= "Browse", style= "Browse.TButton", command=browse)
+    browse.pack()
+    
     #save funtion
     def save_file(tot_profit, trades):
         choice_type_file = type_var.get()
+        
 
         file_name = f"logs_{str(datetime.now().date())}.{choice_type_file}"
-        full_path = os.path.join((e1.get() or ""), file_name)
+        
+        #path to save the files at
+        if save_dir.get():
+            dir = os.path.join(save_dir.get(), "tradelogs")
+            os.makedirs(dir, exist_ok=True)
+            full_path = os.path.join(dir, file_name)
+        elif e1.get() and not save_dir.get():
+            try:
+                dir = os.path.join(e1.get(), "tradelogs")
+                os.makedirs(dir, exist_ok=True)
+            except (OSError, ValueError):
+                messagebox.showerror("invalid Path!!", "invalid path provided, please try a valid path again.")
+                return
+            full_path = os.path.join(dir, file_name)
+        else:
+            dir = os.path.join(os.path.expanduser("~"), "tradelogs")
+            os.makedirs(dir, exist_ok=True)
+            full_path = os.path.join(dir, file_name)
+            
 
         #for CSV file
         if choice_type_file == "csv":
@@ -155,7 +191,7 @@ def end(root, trades):
 
 
         #for txt file 
-        if choice_type_file == "csv":
+        if choice_type_file == "txt":
 
             with open(full_path, "a") as f:
                 f.write(f"\n \ndate = {str(datetime.now().date())}\n")

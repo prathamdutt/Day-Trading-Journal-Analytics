@@ -4,6 +4,13 @@ from tradelogGUI import*
 from tkinter import *
 
 root = Tk()
+style = ttk.Style()
+#print(style.theme_names())
+style.theme_use("alt")
+style.configure('Browse.TButton', font =
+               ('calibri', 10, 'bold'),
+                foreground = 'white', background= "#171855")
+
 
 
 class Trade:
