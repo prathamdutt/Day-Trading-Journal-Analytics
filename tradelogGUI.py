@@ -12,28 +12,34 @@ import json
 
 def openT(root, open_trade):
     
-    form_frame = Frame(root, border= 2, relief= "groove")
+    form_frame = Frame(root, border= 2, relief= "groove", bg= "#2b3249")
     form_frame.grid(row= 0, column= 1, rowspan=2)
     Label(form_frame, text= "Name = ").grid(row= 0, column=0)
     Label(form_frame, text= "price = ").grid(row= 0, column=5)
     Label(form_frame, text= "buy/sell = ").grid(row= 0, column=10)
-
+    side_frame = Frame(form_frame)
+    side_var = StringVar()
+    side_var.set("Buy")
+   
     entries = {
         "name": Entry(form_frame),
         "price": Entry(form_frame),
-        "buy/sell": Entry(form_frame)
+        "buy/sell": [Radiobutton(side_frame,text="Buy", variable=side_var, value= "Buy"), Radiobutton(side_frame,text="Sell", variable=side_var, value= "Sell")]
     }
 
     entries["name"].grid(row=0, column=1)
     entries["price"].grid(row=0, column=6)
-    entries["buy/sell"].grid(row=0, column=11)
+    side_frame.grid(row=0, column=11)
+    entries["buy/sell"][0].pack()
+    entries["buy/sell"][1].pack()
 
     def submit():
         vals = dict()
         for  i,j in entries.items():
-            vals[i] = j.get()
+            if i != "buy/sell":
+                vals[i] = j.get()
         form_frame.destroy()
-        open_trade(name = vals["name"], price = vals["price"], b_s = vals["buy/sell"])
+        open_trade(name = vals["name"], price = vals["price"], b_s = side_var.get())
     #cancel logic
     def cancel():
         for i in entries.values():
@@ -47,7 +53,7 @@ def openT(root, open_trade):
     
 
 def closeT(root, close_trade, open_trades):
-    form_frame = Frame(root, border= 2, relief= "groove")
+    form_frame = Frame(root, border= 2, relief= "groove", bg= "#6a7083")
     form_frame.grid(row= 10, column= 1)
     if open_trades:
         entries = dict()
@@ -69,7 +75,7 @@ def closeT(root, close_trade, open_trades):
             
             #button append to entries
             Radiobutton(form_frame, text=n, variable = r, value = n, command= lambda val = n: on_select(val) ).pack(padx=5, pady=5, anchor="w")
-        entry_frame = Frame(form_frame, border= 2, relief="groove")
+        entry_frame = Frame(form_frame, border= 2, relief="groove", bg="#252a3b")
         entry_frame.pack(padx=5, pady=5)
         Button(form_frame, text= "ok", bg="#040a61", fg= "#ffffff", command=submit).pack(padx=5,pady=5)
         #cancel buton
@@ -207,6 +213,8 @@ def end(root, trades):
     type_var = StringVar(value= "txt")
     ttk.Combobox(form_frame, 
                  textvariable= type_var,
+                 foreground="#ffffff",
+                 background="#2b3249",
                  values= ["txt", "csv", "json"],
                  state= "readonly"
                  ).pack(pady=10)

@@ -4,6 +4,8 @@ from tradelogGUI import*
 from tkinter import *
 
 root = Tk()
+root.geometry("1200x1000")
+root.config(bg= "#1b1919")
 style = ttk.Style()
 #print(style.theme_names())
 style.theme_use("alt")
@@ -27,10 +29,10 @@ class Trade:
         self.id = uuid.uuid4().hex
         
     def P_L(self):
-        if self.buy_or_sell in "Bb":
+        if self.buy_or_sell == "Buy":
             self.profit_loss = self.close_price - self.open_price
             return self.profit_loss
-        if self.buy_or_sell in "Ss":
+        if self.buy_or_sell == "Sell":
             self.profit_loss = self.open_price - self.close_price
             
             return self.profit_loss
@@ -62,23 +64,29 @@ def open_trade(name, price, b_s):
 
             
 
-btn_frame = LabelFrame(root, border=2, relief= "groove", text= "nav: ")
+btn_frame = LabelFrame(root, border=2, relief= "groove", text= "nav: ", font=('calibri', 20, 'bold'), fg= "#ddf08b", 
+                       bg= "#6a7083")
 btn_frame.grid(row= 0, column= 0)
-Button(btn_frame, text="Open Trade", command=lambda r = root : openT(r,open_trade)).pack()
-Button(btn_frame, text="Close Trade", command=lambda r = root : closeT(r, close_trade, open_trades)).pack()
-Button(btn_frame, text="View Trade", command=lambda r = root : view(r, open_trades)).pack()
-Button(btn_frame, text = "End Day!", command=lambda r = root : end(r, trades)).pack()
+Button(btn_frame, text="Open Trade", width= 20, height= 2,font =
+               ('calibri', 12, 'bold'),bg= "#B686EE" , command=lambda r = root : openT(r,open_trade)).pack()
+Button(btn_frame, text="Close Trade",bg= "#B686EE" , width= 20, height= 2,font =
+               ('calibri', 12, 'bold'), command=lambda r = root : closeT(r, close_trade, open_trades)).pack()
+Button(btn_frame, text="View Trade",bg= "#B686EE" , width= 20, height= 2,font =
+               ('calibri', 12, 'bold'), command=lambda r = root : view(r, open_trades)).pack()
+Button(btn_frame, text = "End Day!",bg= "#B686EE" , width= 20, height= 2,font =
+               ('calibri', 12, 'bold'), command=lambda r = root : end(r, trades)).pack()
 
 #nalytics
-analytic_frame = LabelFrame(root, border= 2, relief= "groove", text="anlaytics dash board (not operable)")
+analytic_frame = LabelFrame(root, border= 2, relief= "groove", text="anlaytics dash board (not operable)", bg="#1b1919", fg="#ffffff",
+                            font= ('calibri', 12, 'bold'))
 analytic_frame.grid(row= 20, column= 0, sticky = "W")
 
 #labels NOT OPERABLE (FOR LATER UPGRADE)
-win_rate_label = Label(analytic_frame, text = "win rate = 0%")
-PnL_label = Label(analytic_frame, text = " total P/L = 0")
-avg_win = Label(analytic_frame, text = "avg wins = 0")
-avg_loss = Label(analytic_frame, text = "avg losses = 0")
-tot_trades = Label(analytic_frame, text = f"tot. Trades = {len(trades)}")
+win_rate_label = Label(analytic_frame, text = "win rate = 0%", bg="#1b1919", fg="#ffffff")
+PnL_label = Label(analytic_frame, text = " total P/L = 0", bg="#1b1919", fg="#ffffff")
+avg_win = Label(analytic_frame, text = "avg wins = 0", bg="#1b1919", fg="#ffffff")
+avg_loss = Label(analytic_frame, text = "avg losses = 0", bg="#1b1919", fg="#ffffff")
+tot_trades = Label(analytic_frame, text = f"tot. Trades = {len(trades)}", bg="#1b1919", fg="#ffffff")
 win_rate_label.pack()
 PnL_label.pack()
 avg_win.pack()
