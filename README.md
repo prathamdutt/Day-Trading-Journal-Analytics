@@ -1,5 +1,5 @@
 # Day Trade Logging App
-simple application that logs you trade.
+A lightweight Python GUI app for tracking daily trades and trade performance.
 
 ## Features
 - easy to log your trades through out or during the day
@@ -25,6 +25,8 @@ Python
 
 
 ## Roadmap
+- [x] Basic Trade logging
+- [x] export for '.txt', '.json' and '.csv'
 - [ ] Add `.exe` build
 - [ ] Add custom `.ico`
 - [ ] Improve UI
