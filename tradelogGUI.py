@@ -3,17 +3,18 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 from datetime import datetime
-import sys
 import os
 import csv
 import json 
 
 
 
-def openT(root, open_trade):
+def openT(work_frame, open_trade, work_frames):
+    if "open_trade_panels" in work_frames and len(work_frames["open_trade_panels"]) == 3:
+        return
+    form_frame = Frame(work_frame, border= 2, relief= "groove", bg= "#2b3249")
+    form_frame.pack()#place(x=btn_x, y=(btn_y+20))
     
-    form_frame = Frame(root, border= 2, relief= "groove", bg= "#2b3249")
-    form_frame.grid(row= 0, column= 1, rowspan=2)
     Label(form_frame, text= "Name = ").grid(row= 0, column=0)
     Label(form_frame, text= "price = ").grid(row= 0, column=5)
     Label(form_frame, text= "buy/sell = ").grid(row= 0, column=10)
@@ -32,6 +33,9 @@ def openT(root, open_trade):
     side_frame.grid(row=0, column=11)
     entries["buy/sell"][0].pack()
     entries["buy/sell"][1].pack()
+    work_frame.update_idletasks()
+    work_frames.setdefault("open_trade_panels", []).append((work_frame.winfo_width(),work_frame.winfo_height()))
+    print(work_frames)
 
     def submit():
         vals = dict()
@@ -40,21 +44,31 @@ def openT(root, open_trade):
                 vals[i] = j.get()
         form_frame.destroy()
         open_trade(name = vals["name"], price = vals["price"], b_s = side_var.get())
+        work_frames["open_trade_panels"].pop()
+        print(work_frames)
     #cancel logic
     def cancel():
         for i in entries.values():
+            if isinstance(i, list):
+                i[0].destroy()
+                i[1].destroy()
+                continue
             i.delete(0, 'end')
         entries.clear()
         form_frame.destroy()
+        work_frames["open_trade_panels"].pop()
+        print(work_frames)
 
     Button(form_frame, text= " ok",bg="#070525", fg= "#ffffff",command=submit, padx=3, pady= 2, anchor="se").grid(row = 2, column=0)
     #cancel button
     Button(form_frame, text= "cancel", bg="#c45c5c", fg= "#ffffff", command= cancel).grid(row = 4, column=0)
     
 
-def closeT(root, close_trade, open_trades):
-    form_frame = Frame(root, border= 2, relief= "groove", bg= "#6a7083")
-    form_frame.grid(row= 10, column= 1)
+def closeT(work_frame, close_trade, open_trades, work_frames):
+    if "close_trade_panel" in work_frames:
+        return
+    form_frame = Frame(work_frame, border= 2, relief= "groove", bg= "#6a7083")
+    form_frame.pack()#.grid(row= 10, column= 1)
     if open_trades:
         entries = dict()
         def submit():
@@ -84,33 +98,52 @@ def closeT(root, close_trade, open_trades):
                 i.delete(0, 'end')
             entries.clear()
             form_frame.destroy()
+            work_frames.pop("close_trade_panel", None)
+            print(work_frames)
 
         Button(form_frame, text= "cancel", bg="#c45c5c", fg= "#ffffff", command=cancel).pack(padx=5,pady=5)
+        work_frame.update_idletasks()
+        work_frames.setdefault("close_trade_panel", (form_frame.winfo_x(), form_frame.winfo_y()))
+        print(work_frames)
     else:
+        def clean_cross():
+            work_frames.pop("close_trade_panel", None)
+            print(work_frames)
+            form_frame.destroy()
+
         Label(form_frame, text= "there are no trades to close!").pack(padx=5, pady=5)
+        Button(form_frame, text= "X", fg="#ffffff", bg="#c45c5c", command=clean_cross).pack(anchor="ne")
+
+        work_frame.update_idletasks()
+        work_frames.setdefault("close_trade_panel", (form_frame.winfo_x(), form_frame.winfo_y()))
+        print(work_frames)
 
         
 
-def view(root, open_trades):
+def view(root, open_trades, workframes):
  
     form_frame = Frame(root, border= 2, relief= "groove")
-    form_frame.grid(row= 10, column= 10, sticky = "NE")
+    form_frame.place(relx= 0.6, rely= 0, anchor = "nw")
     Label(form_frame, text="all the trades are viewd here:-").pack(padx=10, pady=5)
     for n,t in open_trades.items():
         now = datetime.now()
         elapse_time = now - datetime.combine(now.date(), t.open_time)
-        Label(form_frame, text=f" name = {n}, open price = {t.open_price}, time elapsed = {elapse_time} HH:MM:SS").pack(padx= 10, pady=1)
+        Label(form_frame, text=f" name = {n}, open price = {t.open_price}, side = {t.buy_or_sell}, time elapsed = {elapse_time} HH:MM:SS").pack(padx= 10, pady=1)
+    form_frame.update_idletasks()
+    workframes["view_trades_panel"] = (form_frame.winfo_width(), form_frame.winfo_height())
 
 
 
-def end(root, trades):
+def end(root, trades, work_frame, work_frames):
     tot_profit  = 0
     choice_path = None
     choice_type_file = "txt"
     
 
     form_frame = Frame(root, border= 2, relief= "groove")
-    form_frame.grid(row= 30, column= 1)
+    work_frame.update_idletasks()
+    #x= workframe width and y = view panel hieght
+    form_frame.place(relx=1, anchor="ne", y = work_frames["view_trades_panel"][1] +10 if "view_trades_panel" in work_frames else 0)#grid(row= 30, column= 1)
     #path update
     Label(form_frame, text=" please choose or enter the path of file:-").pack(padx=10, pady=5)
     e1 = Entry(form_frame)
@@ -238,18 +271,18 @@ def calculate_ananlytics(trades):
     total_pnl = sum(profits)
     wins = [p for p in profits if p > 0]
     losses = [p for p in profits if p < 0]
-    avg_wins = sum(wins)/len(wins)
-    avg_losses = sum(losses)/len(losses)
+    avg_wins = sum(wins)/len(wins) if wins else 0
+    avg_losses = sum(losses)/len(losses) if losses else 0
     win_rate = (len(wins)/len(profits) * 100) if profits else 0
-
-    #def update_analytics(trades):
-    #    win_rate, total_pnl, avg_wins, avg_losses = calculate_ananlytics(trades)
-    #    win_rate_label.config(text= f"win rate = {win_rate}%")
-    #    PnL_label.config(text= f"total P/L = {total_pnl}")
-    #    avg_win.config(text= f"avg wins = {avg_wins}%")
-    #    avg_loss.config(text= f"win rate = {avg_losses}%")
-    #    tot_trades.config(text= f"win rate = {len(trades)}%")
     
     return win_rate, total_pnl, avg_wins, avg_losses
     
-
+def update_analytics(trades, analytics_widgets):
+        if not trades:
+            return
+        win_rate, total_pnl, avg_wins, avg_losses = calculate_ananlytics(trades)
+        analytics_widgets["win_rate_label"].config(text= f"win rate = {win_rate}%")
+        analytics_widgets["PnL_label"].config(text= f"total P/L = {total_pnl}")
+        analytics_widgets["avg_win"].config(text= f"avg wins = {avg_wins}")
+        analytics_widgets["avg_loss"].config(text= f"avg loss = {avg_losses}")
+        analytics_widgets["tot_trades"].config(text= f"total trades = {len(trades)}")
