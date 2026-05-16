@@ -1,4 +1,4 @@
-# day trade logging App
+# Day Trade Logging App
 simple application that logs you trade.
 
 ## Features
@@ -16,7 +16,8 @@ python tadelogs.py
 Python
 
 ## Demo
-<img width="1366" height="768" alt="Screenshot (10)" src="https://github.com/user-attachments/assets/241cb853-ceef-4c68-a6d8-c06860120e45" />
+<img width="1366" height="768" alt="Screenshot (11)" src="https://github.com/user-attachments/assets/b93ebb05-664f-4741-a995-450456c80d06" />
+
 
 ## Files
 - tadelogs.py  -main file
