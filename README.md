@@ -7,27 +7,35 @@ A lightweight Python GUI app for tracking daily trades and trade performance.
 - simple GUI
 
 ## Usage
-
+after downloading the latest final_version.
 ```bash
-python tadelogs.py
+python app.py
 ```
+or create a .exe of app.py
+```bash
+pyinstaller --onefile --add-data "icons;icons" --add-data "config.json;." app.py
+```
+
 
 ## Built with
 Python
 
 ## Demo
-<img width="1366" height="768" alt="Screenshot (11)" src="https://github.com/user-attachments/assets/b93ebb05-664f-4741-a995-450456c80d06" />
+<img width="1366" height="768" alt="Screenshot (14)" src="https://github.com/user-attachments/assets/099eed12-e459-4e10-af95-ee855b6d807f" />
 
+##Important Note
+- the api feature is available after the Flask is online.
 
 ## Files
-- tadelogs.py  -main file
-- tadelogs.py  -GUI file
+- app.py  -main file
+- util.py  -GUI file
+- config.json
 
 
 ## Roadmap
 - [x] Basic Trade logging
 - [x] export for '.txt', '.json' and '.csv'
-- [ ] Add `.exe` build
-- [ ] Add custom `.ico`
-- [ ] Improve UI
-- [ ] Better error handling
+- [x] Add `.exe` build
+- [x] API integration
+- [ ] excel export
+- [ ] obsidian export
