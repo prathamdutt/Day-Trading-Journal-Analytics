@@ -8,6 +8,10 @@ A lightweight Python GUI app for tracking daily trades and trade performance.
 
 ## Usage
 after downloading the latest final_version.
+by going to,
+```bash
+project\final_version\
+```
 ```bash
 python app.py
 ```
