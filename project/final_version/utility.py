@@ -26,7 +26,7 @@ ENDPOINTS = [
     "https://www.apple.com",
 ]
 def request_recieve(symbol):
-    with open("config.json", "r") as f:
+    with open(config_path, "r") as f:
         AUTH_TOKEN = json.load(f)["Authorization"]
     headers = {
         "Authorization" : AUTH_TOKEN
